@@ -10,7 +10,7 @@ exports.sendBrevoEmail = async(options)=>{
             subject: options.subject,
             htmlContent: options.html,
             sender: {
-                name: 'Picker App',
+                name: 'YabaTech MarketPlace',
                 email: process.env.USER_EMAIL
             },
             to: [{ email: options.email }]
