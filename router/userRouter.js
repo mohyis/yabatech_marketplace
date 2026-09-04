@@ -11,6 +11,6 @@ router.post('/resend-otp', resendOTP)
 router.post('/forgot-password', forgotPassword)
 router.post('/verify-forgot-password', verifyForgotPassword)
 router.post('/login', loginRateLimiter , loginValidator, login)
-router.post('/logout',authenticator, logout)
+router.post('/logout', checkUser, logout)
 
 module.exports = router
