@@ -13,6 +13,7 @@ exports.register = async (req, res, next) => {
     try {
 
         const OTP = otpGenerator.generate(6, { upperCaseAlphabets: false, lowerCaseAlphabets: false, specialChars: false })
+        const expiresAt = new Date(Date.now() + 5 * 60000);
 
         const file = req.file;
         const { firstName, lastName, matricNumber, department, level, email, phoneNumber, password, confirmPassword } = req.body
@@ -41,6 +42,8 @@ exports.register = async (req, res, next) => {
             department,
             level,
             email,
+            otp: OTP,
+            otpExpiresAt: expiresAt,
             phoneNumber,
             password: hashedPassword,
         })
