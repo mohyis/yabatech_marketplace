@@ -35,7 +35,7 @@ const swaggerDefinition = {
         version: '2.0.0',
         description: 
             `This is a REST API application made with Express. It retrieves data from JSONPlaceholder.
-             The base URL is: https://spin-cycle.onrender.com`,
+             The base URL is:https://yabatech-marketplace-8cv3.onrender.com`,
         license: {
             name: 'Official URL',
             url: 'https://google.com',
@@ -47,7 +47,7 @@ const swaggerDefinition = {
     },
     servers: [
         {
-            url: 'https://spin-cycle.onrender.com',
+            url: 'https://yabatech-marketplace-8cv3.onrender.com',
             description: 'development server',
         },
     ],
@@ -73,7 +73,7 @@ const options = {
 }
 
 const swaggerSpec = swaggerJsdoc(options);
-app.use('/api/admin/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use('/api/user/documentation', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // 404 handler for undefined routes
 app.use((req, res, next) => {
