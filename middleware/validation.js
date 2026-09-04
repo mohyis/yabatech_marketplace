@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 
-const adminModel = require('../models/admin');
+const userModel = require('../models/user');
 
 exports.authenticator = async(req,res,next)=>{
    try {
@@ -30,7 +30,7 @@ exports.authenticator = async(req,res,next)=>{
 };
 
 
-exports.checkAdmin = async(req,res,next)=>{
+exports.checkUser = async(req,res,next)=>{
     try {
         const auth = req.headers.authorization;
     const token = auth.split(' ')[1];
@@ -49,22 +49,14 @@ exports.checkAdmin = async(req,res,next)=>{
                 statusCode: 400
             })
         }
-        const findAdmin = await adminModel.findById(result.id)
-        if(!findAdmin){
+        const findUser = await userModel.findByPk(result.id)
+        if(!findUser){
             return next({
-                message: 'admin not found',
+                message: 'user not found',
                 statusCode: 404
             })
         }
 
-        const role = findAdmin.role
-
-        if (role !== 'admin'){
-            return next({
-                message: 'unauthorized access',
-                statusCode: 403
-            })
-        }
         req.user = result
 
         next()
