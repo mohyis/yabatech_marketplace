@@ -20,7 +20,7 @@ const productRouter = require('./router/productRouter')
     
 app.use(morgan('dev'));
 app.use(express.json())
-app.use('/api/admin', userRouter)
+app.use('/api/user', userRouter)
 app.use('/api/product', productRouter)
 // app.use((req, res , next)=>{
 //     res.status(500).json({
