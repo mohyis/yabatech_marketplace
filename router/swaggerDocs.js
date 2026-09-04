@@ -209,10 +209,6 @@
  *                 type: string
  *                 format: password
  *                 example: Password@123
- *               image:
- *                 type: string
- *                 format: binary
- *                 description: Optional profile image
  *     responses:
  *       201:
  *         description: Account created successfully
