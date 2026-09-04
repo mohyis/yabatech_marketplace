@@ -1,5 +1,4 @@
 const router = require('express').Router()
-const  upload  = require('../middleware/multer')
 const { register, verifyEmail, resendOTP, forgotPassword, verifyForgotPassword, login, logout } = require('../controller/userController')
 const { loginValidator, registerValidator } = require('../middleware/joiValidation')
 const { authenticator } = require('../middleware/validation')
