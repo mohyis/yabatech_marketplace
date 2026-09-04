@@ -1,7 +1,7 @@
+const express = require('express');
 require('dotenv').config();
 require('./config/config')
 const sequelize = require('./database/database')
-const express = require('express');
 const mongoose = require('mongoose');
 
 const swaggerUi = require('swagger-ui-express')
