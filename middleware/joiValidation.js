@@ -4,84 +4,127 @@ const joi = require('joi')
 exports.registerValidator = (req, res, next) => {
     const schema = joi.object({
         firstName: joi.string().pattern(/^[a-zA-Z]{3,}$/).required().messages({
-            'any.required': 'First name is required',
-            'string.empty': 'First name cannot be empty',
-            'string.pattern.base': 'First name cannot contain digits or whitespace and must be a minimum of 3 characters'
-        }),
-        lastName: joi.string().pattern(/^[a-zA-Z]{3,}$/).required().messages({
-            'any.required': 'Last name is required',
-            'string.empty': 'Last name cannot be empty',
-            'string.pattern.base': 'Last name cannot contain digits or whitespace and must be a minimum of 3 characters'
-        }),
-        matricNumber: joi.string().pattern(/^[A-Za-z]+\/[A-Za-z]+\/\d{4}\/\d{3}$/).required().messages({
-            'any.required': 'Matric number is required',
-            'string.empty': 'Matric number cannot be empty',
-            'string.pattern.base': 'Matric number must be in the format ND/CSC/2023/001'
-        }),
-        department: joi.string().pattern(/^[a-zA-Z]{3,}$/).required().messages({
-            'any.required': 'Department is required',
-            'string.empty': 'Department cannot be empty',
-        }),
-        level: joi.string().pattern(/^[a-zA-Z0-9]{1,}$/).required().messages({
-            'any.required': 'Level is required',
-            'string.empty': 'Level cannot be empty',
-        }),
-        email: joi.string().email().required().messages({
-            'any.required': 'Email is required',
-            'string.empty': 'Email cannot be empty',
-            'string.email': 'Invalid email format'
-        }),
-        phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).required().messages({
-            'any.required': 'Phone number is required',
-            'string.empty': 'Phone number cannot be empty',
-            'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
-        }),
-        password: joi.string().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/).required().messages({
-            'any.required': 'Password is required',
-            'string.empty': 'Password cannot be empty',
-            'string.pattern.base': 'Password must be a minimum of 8 characters and contain at least one uppercase letter, one lowercase letter, one digit, and one special character'
-        }),
-        confirmPassword: joi.string().valid(joi.ref('password')).required().messages({
-            'any.required': 'Confirm password is required',
-            'string.empty': 'Confirm password cannot be empty',
-            'any.only': 'Passwords do not match'
-        })
-    })
+                'any.required': 'First name is required',
+                'string.empty': 'First name cannot be empty',
+                'string.pattern.base':
+                    'First name cannot contain digits, spaces, or special characters and must be a minimum of 3 characters'
+            }),
 
-    const { error } = schema.validate(req.body)
+        lastName: joi.string().pattern(/^[a-zA-Z]{3,}$/).required().messages({
+                'any.required': 'Last name is required',
+                'string.empty': 'Last name cannot be empty',
+                'string.pattern.base':
+                    'Last name cannot contain digits, spaces, or special characters and must be a minimum of 3 characters'
+            }),
+
+        matricNumber: joi.string().pattern(/^[A-Za-z]+\/[A-Za-z]+\/\d{4}\/\d{3}$/).required().messages({
+                'any.required': 'Matric number is required',
+                'string.empty': 'Matric number cannot be empty',
+                'string.pattern.base':
+                    'Matric number must be in the format ND/CSC/2023/001'
+            }),
+
+        department: joi.string().pattern(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).required().messages({
+                'any.required': 'Department is required',
+                'string.empty': 'Department cannot be empty',
+                'string.pattern.base':
+                    'Department must contain only letters and single spaces'
+            }),
+
+        level: joi.string().pattern(/^(100|200|300|400|500|600)$/).required().messages({
+                'any.required': 'Level is required',
+                'string.empty': 'Level cannot be empty',
+                'string.pattern.base':
+                    'Level must be a valid academic level such as 100, 200, 300, 400, 500, or 600'
+            }),
+
+        email: joi.string().email().required().messages({
+                'any.required': 'Email is required',
+                'string.empty': 'Email cannot be empty',
+                'string.email': 'Invalid email format'
+            }),
+
+        phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).required().messages({
+                'any.required': 'Phone number is required',
+                'string.empty': 'Phone number cannot be empty',
+                'string.pattern.base':
+                    'Phone number must be a valid number between 11 and 14 digits'
+            }),
+
+        password: joi.string().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/).required().messages({
+                'any.required': 'Password is required',
+                'string.empty': 'Password cannot be empty',
+                'string.pattern.base':
+                    'Password must be a minimum of 8 characters and contain at least one uppercase letter, one lowercase letter, one digit, and one special character'
+            }),
+
+        confirmPassword: joi.string().valid(joi.ref('password')).required().messages({
+                'any.required': 'Confirm password is required',
+                'string.empty': 'Confirm password cannot be empty',
+                'any.only': 'Passwords do not match'
+            })
+    });
+
+    const { error } = schema.validate(req.body);
+
     if (error) {
         return res.status(400).json({
             message: error.details[0].message
-        })
+        });
     }
-    next()
-}
+
+    next();
+};
 
 exports.updateUserValidator = (req, res, next) => {
     const schema = joi.object({
         firstName: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
-            'string.pattern.base': 'First name must contain only letters and be at least 3 characters long'
-        }),
+                'any.required': 'First name is required',
+                'string.empty': 'First name cannot be empty',
+                'string.pattern.base':
+                    'First name cannot contain digits, spaces, or special characters and must be a minimum of 3 characters'
+            }),
+
         lastName: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
-            'string.pattern.base': 'Last name must contain only letters and be at least 3 characters long'
-        }),
+                'any.required': 'Last name is required',
+                'string.empty': 'Last name cannot be empty',
+                'string.pattern.base':
+                    'Last name cannot contain digits, spaces, or special characters and must be a minimum of 3 characters'
+            }),
+
         matricNumber: joi.string().pattern(/^[A-Za-z]+\/[A-Za-z]+\/\d{4}\/\d{3}$/).messages({
-            'any.required': 'Matric number is required',
-            'string.empty': 'Matric number cannot be empty',
-            'string.pattern.base': 'Matric number must be in the format ND/CSC/2023/001'
-        }),
-        department: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
-            'string.pattern.base': 'Department must contain only letters and be at least 3 characters long'
-        }),
-        level: joi.string().pattern(/^[a-zA-Z0-9]{1,}$/).messages({
-            'string.pattern.base': 'Level must contain only letters and numbers and be at least 1 character long'
-        }),
+                'any.required': 'Matric number is required',
+                'string.empty': 'Matric number cannot be empty',
+                'string.pattern.base':
+                    'Matric number must be in the format ND/CSC/2023/001'
+            }),
+
+        department: joi.string().pattern(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).messages({
+                'any.required': 'Department is required',
+                'string.empty': 'Department cannot be empty',
+                'string.pattern.base':
+                    'Department must contain only letters and single spaces'
+            }),
+
+        level: joi.string().pattern(/^(100|200|300|400|500|600)$/).messages({
+                'any.required': 'Level is required',
+                'string.empty': 'Level cannot be empty',
+                'string.pattern.base':
+                    'Level must be a valid academic level such as 100, 200, 300, 400, 500, or 600'
+            }),
+
         email: joi.string().email().messages({
-            'string.email': 'Invalid email format'
-        }),
+                'any.required': 'Email is required',
+                'string.empty': 'Email cannot be empty',
+                'string.email': 'Invalid email format'
+            }),
+
         phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).messages({
-            'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
-        })
+                'any.required': 'Phone number is required',
+                'string.empty': 'Phone number cannot be empty',
+                'string.pattern.base':
+                    'Phone number must be a valid number between 11 and 14 digits'
+            }),
     })
 
     const { error } = schema.validate(req.body)
