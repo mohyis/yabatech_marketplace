@@ -250,6 +250,95 @@
  *                   type: string
  *                   example: email already in use
  */
+/**
+ * @swagger
+ * /api/user/update-profile:
+ *   put:
+ *     tags:
+ *       - User
+ *     summary: Update the current user's profile details
+ *     description: Updates the authenticated user's profile (firstName, lastName, matricNumber, department, level, email, phoneNumber).
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *                 example: John
+ *               lastName:
+ *                 type: string
+ *                 example: Doe
+ *               matricNumber:
+ *                 type: string
+ *                 example: YAB/19/1234
+ *               department:
+ *                 type: string
+ *                 example: Computer Engineering
+ *               level:
+ *                 type: string
+ *                 example: "300"
+ *               email:
+ *                 type: string
+ *                 example: johndoe@gmail.com
+ *               phoneNumber:
+ *                 type: string
+ *                 example: "+2348029837465"
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User updated successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     firstName:
+ *                       type: string
+ *                     lastName:
+ *                       type: string
+ *                     matricNumber:
+ *                       type: string
+ *                     department:
+ *                       type: string
+ *                     level:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     phoneNumber:
+ *                       type: string
+ *       400:
+ *         description: Validation failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: First name must contain only letters and be at least 3 characters long
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       401:
+ *         description: Login required / invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 
 /**
  * @swagger
