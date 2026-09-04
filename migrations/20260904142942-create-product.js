@@ -26,9 +26,8 @@ module.exports = {
               values: ["new", "used-like new", "used-good condition", "used-fair condition"]
             },
             price: {
-              type: Sequelize.NUMBER,
+              type: Sequelize.INTEGER,
               allowNull: false,
-              defaultValue: 500
             },
             description: {
               type: Sequelize.STRING,

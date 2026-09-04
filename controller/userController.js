@@ -69,6 +69,40 @@ exports.register = async (req, res, next) => {
     }
 }
 
+exports.updateUser = async(req,res,next)=>{
+    try {
+        const { id } = req.user;
+        const { firstName, lastName, matricNumber, department, level, email, phoneNumber } = req.body;
+
+        const user = await userModel.findByPk(id);
+        if (!user) {
+            return next({
+                message: 'user not found',
+                statusCode: 404
+            });
+        }
+
+        await userModel.update(
+            { firstName, lastName, matricNumber, department, level, email, phoneNumber },
+            { where: { id: id } }
+        );
+
+        res.status(200).json({
+            message: 'User updated successfully',
+            data: {
+                firstName,
+                lastName,
+                matricNumber,
+                department,
+                level,
+                email,
+                phoneNumber
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
 
 exports.verifyEmail = async(req, res, next)=>{
 
