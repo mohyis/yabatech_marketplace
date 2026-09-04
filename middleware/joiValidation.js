@@ -13,9 +13,10 @@ exports.registerValidator = (req, res, next) => {
             'string.empty': 'Last name cannot be empty',
             'string.pattern.base': 'Last name cannot contain digits or whitespace and must be a minimum of 3 characters'
         }),
-        matricNumber: joi.string().pattern(/^[a-zA-Z0-9]{6,}$/).required().messages({
+        matricNumber: joi.string().pattern(/^[A-Za-z]+\/[A-Za-z]+\/\d{4}\/\d{3}$/).required().messages({
             'any.required': 'Matric number is required',
             'string.empty': 'Matric number cannot be empty',
+            'string.pattern.base': 'Matric number must be in the format ND/CSC/2023/001'
         }),
         department: joi.string().pattern(/^[a-zA-Z]{3,}$/).required().messages({
             'any.required': 'Department is required',
@@ -63,6 +64,11 @@ exports.updateUserValidator = (req, res, next) => {
         }),
         lastName: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
             'string.pattern.base': 'Last name must contain only letters and be at least 3 characters long'
+        }),
+        matricNumber: joi.string().pattern(/^[A-Za-z]+\/[A-Za-z]+\/\d{4}\/\d{3}$/).messages({
+            'any.required': 'Matric number is required',
+            'string.empty': 'Matric number cannot be empty',
+            'string.pattern.base': 'Matric number must be in the format ND/CSC/2023/001'
         }),
         department: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
             'string.pattern.base': 'Department must contain only letters and be at least 3 characters long'
