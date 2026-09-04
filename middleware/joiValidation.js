@@ -13,10 +13,27 @@ exports.registerValidator = (req, res, next) => {
             'string.empty': 'Last name cannot be empty',
             'string.pattern.base': 'Last name cannot contain digits or whitespace and must be a minimum of 3 characters'
         }),
+        matricNumber: joi.string().pattern(/^[a-zA-Z0-9]{6,}$/).required().messages({
+            'any.required': 'Matric number is required',
+            'string.empty': 'Matric number cannot be empty',
+        }),
+        department: joi.string().pattern(/^[a-zA-Z]{3,}$/).required().messages({
+            'any.required': 'Department is required',
+            'string.empty': 'Department cannot be empty',
+        }),
+        level: joi.string().pattern(/^[a-zA-Z0-9]{1,}$/).required().messages({
+            'any.required': 'Level is required',
+            'string.empty': 'Level cannot be empty',
+        }),
         email: joi.string().email().required().messages({
             'any.required': 'Email is required',
             'string.empty': 'Email cannot be empty',
             'string.email': 'Invalid email format'
+        }),
+        phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).required().messages({
+            'any.required': 'Phone number is required',
+            'string.empty': 'Phone number cannot be empty',
+            'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
         }),
         password: joi.string().pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#?!@$%^&*-]).{8,}$/).required().messages({
             'any.required': 'Password is required',
@@ -27,6 +44,37 @@ exports.registerValidator = (req, res, next) => {
             'any.required': 'Confirm password is required',
             'string.empty': 'Confirm password cannot be empty',
             'any.only': 'Passwords do not match'
+        })
+    })
+
+    const { error } = schema.validate(req.body)
+    if (error) {
+        return res.status(400).json({
+            message: error.details[0].message
+        })
+    }
+    next()
+}
+
+exports.updateUserValidator = (req, res, next) => {
+    const schema = joi.object({
+        firstName: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
+            'string.pattern.base': 'First name must contain only letters and be at least 3 characters long'
+        }),
+        lastName: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
+            'string.pattern.base': 'Last name must contain only letters and be at least 3 characters long'
+        }),
+        department: joi.string().pattern(/^[a-zA-Z]{3,}$/).messages({
+            'string.pattern.base': 'Department must contain only letters and be at least 3 characters long'
+        }),
+        level: joi.string().pattern(/^[a-zA-Z0-9]{1,}$/).messages({
+            'string.pattern.base': 'Level must contain only letters and numbers and be at least 1 character long'
+        }),
+        email: joi.string().email().messages({
+            'string.email': 'Invalid email format'
+        }),
+        phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).messages({
+            'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
         })
     })
 
