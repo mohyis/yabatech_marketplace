@@ -64,86 +64,46 @@ exports.loginValidator = (req, res, next) => {
 
 
 
-exports.createOrderValidator = (req, res, next) => {
+exports.createProductValidator = (req, res, next) => {
     const schema = joi.object({
-        firstName: joi.string().pattern(/^[a-zA-Z]{2,}$/).required().messages({
-            'any.required': 'First name is required',
-            'string.empty': 'First name cannot be empty',
-            'string.pattern.base': 'First name cannot contain digits or whitespace and must be at least 2 characters'
+        productName: joi.string().pattern(/^[a-zA-Z]{2,}$/).required().messages({
+            'any.required': 'Product name is required',
+            'string.empty': 'Product name cannot be empty',
+            'string.pattern.base': 'Product name cannot contain digits or whitespace and must be at least 2 characters'
         }),
-        lastName: joi.string().pattern(/^[a-zA-Z]{2,}$/).optional().allow('').messages({
-            'string.pattern.base': 'Last name cannot contain digits or whitespace and must be at least 2 characters'
+        category: joi.string().required().messages({
+            'any.required': 'Category is required',
+            'string.empty': 'Category cannot be empty'
         }),
-        email: joi.string().email().required().messages({
-            'any.required': 'Email is required',
-            'string.empty': 'Email cannot be empty',
-            'string.email': 'Invalid email format'
+        condition: joi.string().valid('new', 'used').required().messages({
+            'any.required': 'Condition is required',
+            'string.empty': 'Condition cannot be empty',
+        }),
+        price: joi.number().positive().required().messages({
+            'any.required': 'Price is required',
+            'number.empty': 'Price cannot be empty',
+            'number.positive': 'Price must be a positive number'
+        }),
+        description: joi.string().min(10).max(200).required().messages({
+            'any.required': 'Description is required',
+            'string.empty': 'Description cannot be empty',
+            'string.min': 'Description must be at least 10 characters',
+            'string.max': 'Description cannot exceed 200 characters'
+        }),
+        image: joi.string().required().messages({
+            'any.required': 'Image is required',
+            'string.empty': 'Image cannot be empty'
         }),
         phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).required().messages({
             'any.required': 'Phone number is required',
             'string.empty': 'Phone number cannot be empty',
             'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
         }),
-        address: joi.string().min(5).required().messages({
-            'any.required': 'Address is required',
-            'string.empty': 'Address cannot be empty',
-            'string.min': 'Address must be at least 5 characters'
-        }),
-        pickUpDate: joi.date().min('now').required().messages({
-            'any.required': 'Pick-up date is required',
-            'date.base': 'Pick-up date must be a valid date',
-            'date.greater': 'Pick-up date must be a future date'
-        }),
-        pickUpTime: joi.string().required().messages({
-            'any.required': 'Pick-up time is required',
-            'string.empty': 'Pick-up time cannot be empty'
-        }),
-        deliveryMode: joi.string().valid('delivery', 'pickup').required().messages({
-            'any.required': 'Delivery mode is required',
-            'string.empty': 'Delivery mode cannot be empty',
-            'any.only': 'Delivery mode must be either delivery or pickup'
-        }),
-        paymentMode: joi.string().valid('online', 'cash', 'transfer').required().messages({
-            'any.required': 'Payment mode is required',
-            'string.empty': 'Payment mode cannot be empty',
-            'any.only': 'Payment mode must be one of online, cash, or transfer'
-        }),
-        item: joi.string().optional().allow('').messages({
-            'string.base': 'Item must be a string'
-        }),
-        specification: joi.string().optional().allow('').messages({
-            'string.base': 'Specification must be a string'
-        }),
-        quantity: joi.number().integer().min(1).optional().messages({
-            'number.base': 'Quantity must be a number',
-            'number.integer': 'Quantity must be a whole number',
-            'number.min': 'Quantity must be at least 1'
-        }),
-        amount: joi.number().min(0).optional().messages({
-            'number.base': 'Amount must be a number',
-            'number.min': 'Amount cannot be negative'
-        }),
-        note: joi.string().optional().allow('').messages({
-            'string.base': 'Note must be a string'
-        })
-    })
-
-    const { error } = schema.validate(req.body)
-    if (error) {
-        return res.status(400).json({
-            message: error.details[0].message
-        })
-    }
-    next()
-};
-
-exports.updateOrderStatusValidator = (req, res, next) => {
-    const schema = joi.object({
-        status: joi.string().valid('new request', 'in-progress', 'completed', 'cancelled').required().messages({
+        status: joi.string().valid('available', 'sold').required().messages({
             'any.required': 'Status is required',
             'string.empty': 'Status cannot be empty',
-            'any.only': 'Status must be one of: new request, in-progress, completed, or cancelled'
         })
+           
     })
 
     const { error } = schema.validate(req.body)
@@ -155,29 +115,12 @@ exports.updateOrderStatusValidator = (req, res, next) => {
     next()
 };
 
-exports.createMessageValidator = (req, res, next) => {
+exports.updateProductStatusValidator = (req, res, next) => {
     const schema = joi.object({
-        name: joi.string().min(2).required().messages({
-            'any.required': 'Name is required',
-            'string.empty': 'Name cannot be empty',
-            'string.min': 'Name must be at least 2 characters'
-        }),
-        email: joi.string().email().required().messages({
-            'any.required': 'Email is required',
-            'string.empty': 'Email cannot be empty',
-            'string.email': 'Invalid email format'
-        }),
-        subject: joi.string().min(3).max(150).required().messages({
-            'any.required': 'Subject is required',
-            'string.empty': 'Subject cannot be empty',
-            'string.min': 'Subject must be at least 3 characters',
-            'string.max': 'Subject cannot exceed 150 characters'
-        }),
-        message: joi.string().min(10).max(1000).required().messages({
-            'any.required': 'Message is required',
-            'string.empty': 'Message cannot be empty',
-            'string.min': 'Message must be at least 10 characters',
-            'string.max': 'Message cannot exceed 1000 characters'
+        status: joi.string().valid('available', 'sold').required().messages({
+            'any.required': 'Status is required',
+            'string.empty': 'Status cannot be empty',
+            'any.only': 'Status must be one of: available, sold'
         })
     })
 
@@ -189,79 +132,3 @@ exports.createMessageValidator = (req, res, next) => {
     }
     next()
 };
-
-exports.createStaffValidator = (req, res, next) => {
-    const schema = joi.object({
-        firstName: joi.string().pattern(/^[a-zA-Z]{2,}$/).required().messages({
-            'any.required': 'First name is required',
-            'string.empty': 'First name cannot be empty',
-            'string.pattern.base': 'First name cannot contain digits or whitespace and must be at least 2 characters'
-        }),
-        lastName: joi.string().pattern(/^[a-zA-Z]{2,}$/).required().messages({
-            'any.required': 'Last name is required',
-            'string.empty': 'Last name cannot be empty',
-            'string.pattern.base': 'Last name cannot contain digits or whitespace and must be at least 2 characters'
-        }),
-        email: joi.string().email().required().messages({
-            'any.required': 'Email is required',
-            'string.empty': 'Email cannot be empty',
-            'string.email': 'Invalid email format'
-        }),
-        phoneNumber: joi.string().pattern(/^\+?[0-9]{11,14}$/).required().messages({
-            'any.required': 'Phone number is required',
-            'string.empty': 'Phone number cannot be empty',
-            'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
-        }),
-        address: joi.string().min(5).required().messages({
-            'any.required': 'Address is required',
-            'string.empty': 'Address cannot be empty',
-            'string.min': 'Address must be at least 5 characters'
-        }),
-        position: joi.string().required().messages({
-            'any.required': 'Position is required',
-            'string.empty': 'Position cannot be empty'
-        }),
-        bscScience: joi.string().optional().allow('').messages({
-            'string.base': 'BSc Science must be a string'
-        }),
-        schoolAttended: joi.string().optional().allow('').messages({
-            'string.base': 'School attended must be a string'
-        }),
-        professionalCerts: joi.string().optional().allow('').messages({
-            'string.base': 'Professional certifications must be a string'
-        }),
-        guarantorFirstName: joi.string().pattern(/^[a-zA-Z]{2,}$/).optional().messages({
-            'string.empty': 'Guarantor first name cannot be empty',
-            'string.pattern.base': 'Guarantor first name cannot contain digits or whitespace and must be at least 2 characters'
-        }),
-        guarantorLastName: joi.string().pattern(/^[a-zA-Z]{2,}$/).optional().messages({
-            'string.empty': 'Guarantor last name cannot be empty',
-            'string.pattern.base': 'Guarantor last name cannot contain digits or whitespace and must be at least 2 characters'
-        }),
-        guarantorEmail: joi.string().email().optional().messages({
-            'string.empty': 'Guarantor email cannot be empty',
-            'string.email': 'Invalid guarantor email format'
-        }),
-        guarantorPhoneNumber: joi.string().pattern(/^\+?[0-9]{7,15}$/).optional().messages({
-            'any.required': 'Guarantor phone number is required',
-            'string.empty': 'Guarantor phone number cannot be empty',
-            'string.pattern.base': 'Guarantor phone number must be a valid number between 7 and 15 digits'
-        }),
-        guarantorAddress: joi.string().min(5).optional().messages({
-            'string.empty': 'Guarantor address cannot be empty',
-            'string.min': 'Guarantor address must be at least 5 characters'
-        }),
-        relationship: joi.string().optional().messages({
-            'string.empty': 'Relationship cannot be empty'
-        })
-    })
-
-    const { error } = schema.validate(req.body)
-    if (error) {
-        return res.status(400).json({
-            message: error.details[0].message
-        })
-    }
-    next()
-}
-
