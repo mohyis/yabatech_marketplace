@@ -31,7 +31,7 @@ exports.registerValidator = (req, res, next) => {
                     'Department must contain only letters and single spaces'
             }),
 
-       level: joi.string().pattern(/^(ND|HND)$/).messages({
+       level: joi.string().messages({
                 'any.required': 'Level is required',
                 'string.empty': 'Level cannot be empty',
                 'string.pattern.base':
@@ -106,13 +106,13 @@ exports.updateUserValidator = (req, res, next) => {
                     'Department must contain only letters and single spaces'
             }),
 
-        level: joi.string().pattern(/^(ND|HND)$/).messages({
+        level: joi.string().messages({
                 'any.required': 'Level is required',
                 'string.empty': 'Level cannot be empty',
                 'string.pattern.base':
                     'Level must be a valid academic level such as ND or HND'
             }),
-
+            
         email: joi.string().email().messages({
                 'any.required': 'Email is required',
                 'string.empty': 'Email cannot be empty',
