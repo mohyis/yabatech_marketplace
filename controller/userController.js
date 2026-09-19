@@ -32,6 +32,14 @@ exports.register = async (req, res, next) => {
              
          }
 
+        const existingPhoneNumber = await userModel.findOne({ where: { phoneNumber: phoneNumber } });
+         if (existingPhoneNumber) {
+                 return res.status(409).json({ 
+                     message: 'phone number already in use' 
+                 });
+             
+         }
+
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
