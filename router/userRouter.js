@@ -1,11 +1,12 @@
 const router = require('express').Router()
-const { register, updateUser,verifyEmail, resendOTP, getUserProfile,forgotPassword, resetPassword, verifyForgotPassword, login, logout } = require('../controller/userController')
+const { register, updateUser,verifyEmail, userDashboard, resendOTP, getUserProfile,forgotPassword, resetPassword, verifyForgotPassword, login, logout } = require('../controller/userController')
 const { loginValidator, registerValidator, updateUserValidator } = require('../middleware/joiValidation')
 const { checkUser } = require('../middleware/validation')
 const { loginRateLimiter } = require('../middleware/rateLimiter')
 
 router.post('/register', registerValidator, register)
 router.put('/update-profile', checkUser, updateUserValidator, updateUser)
+router.get('/dashboard', checkUser, userDashboard)
 router.post('/verify-email', verifyEmail)
 router.post('/resend-otp', resendOTP)
 router.post('/forgot-password', forgotPassword)
