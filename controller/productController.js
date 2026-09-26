@@ -271,8 +271,8 @@ exports.getTotalAvailableProducts = async(req,res,next)=>{
 exports.deleteProduct = async(req,res,next)=>{
     try {
         const {id} = req.user;  
-        const productId = req.params.id
-        const product = await productModel.findByPk(productId)
+        const productId = req.params
+        const product = await productModel.findOne({ where: { id: productId, userId: id } })
         if(!product){
             return res.status(404).json({   
                 message: 'Product not found'

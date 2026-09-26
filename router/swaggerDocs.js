@@ -81,9 +81,9 @@
  *     Product:
  *       type: object
  *       properties:
- *         _id:
+ *         id:
  *           type: string
- *           description: Product Mongo ObjectId
+ *           description: Product ID
  *           example: 7876745637829837465789d9
  *         userId:
  *           type: string
@@ -122,7 +122,7 @@
  *     ProductSummary:
  *       type: object
  *       properties:
- *         _id:
+ *         id:
  *           type: string
  *         productName:
  *           type: string
@@ -664,13 +664,141 @@
  *                   example: logout successful
  */
 
+/**
+ * @swagger
+ * /api/user/profile:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get the current user's profile
+ *     description: Returns the profile of the authenticated user (password, OTP and OTP expiry are excluded).
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: User profile retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User profile retrieved successfully
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: 787674563782983746578d9f
+ *                     firstName:
+ *                       type: string
+ *                       example: John
+ *                     lastName:
+ *                       type: string
+ *                       example: Doe
+ *                     matricNumber:
+ *                       type: string
+ *                       example: YAB/19/1234
+ *                     department:
+ *                       type: string
+ *                       example: Computer Engineering
+ *                     level:
+ *                       type: string
+ *                       example: "300"
+ *                     email:
+ *                       type: string
+ *                       example: johndoe@gmail.com
+ *                     phoneNumber:
+ *                       type: string
+ *                       example: "+2348029837465"
+ *                     role:
+ *                       type: string
+ *                       example: user
+ *                     isVerified:
+ *                       type: boolean
+ *                       example: false
+ *       401:
+ *         description: Login required / invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+/**
+ * @swagger
+ * /api/user/dashboard:
+ *   get:
+ *     tags:
+ *       - User
+ *     summary: Get the current user's dashboard
+ *     description: Returns dashboard statistics (total, active and sold listings) along with a summary of the user's products.
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Dashboard data retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 dashboard:
+ *                   type: object
+ *                   properties:
+ *                     totalListings:
+ *                       type: number
+ *                       example: 5
+ *                     activeListings:
+ *                       type: number
+ *                       example: 3
+ *                     soldItems:
+ *                       type: number
+ *                       example: 2
+ *                 requiredProducts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                       productName:
+ *                         type: string
+ *                       category:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       image:
+ *                         type: string
+ *                       status:
+ *                         type: string
+ *       401:
+ *         description: Login required / invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: User not found or no products exist for the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
 // ============================================================
 // PRODUCT ENDPOINTS
 // ============================================================
 
 /**
  * @swagger
- * /api/product:
+ * /api/product/create-product:
  *   post:
  *     tags:
  *       - Product
@@ -744,6 +872,12 @@
  *                 message:
  *                   type: string
  *                   example: Please fill in all required fields
+ */
+
+
+/**
+ * @swagger
+ * /api/product/all-products:
  *   get:
  *     tags:
  *       - Product
@@ -766,11 +900,60 @@
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/ProductSummary'
+ *       401:
+ *         description: Login required / invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 /**
  * @swagger
- * /api/product/{id}:
+ * /api/product/product/{productId}:
+ *   get:
+ *     tags:
+ *       - Product
+ *     summary: Get a product by ID
+ *     description: Retrieves a single product owned by the authenticated user.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         description: Product ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Product retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Product retrieved successfully
+ *                 data:
+ *                   $ref: '#/components/schemas/Product'
+ *       401:
+ *         description: Login required / invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       404:
+ *         description: Product not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Product not found
  *   put:
  *     tags:
  *       - Product
@@ -856,6 +1039,12 @@
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ */
+
+
+/**
+ * @swagger
+ * /api/product/delete-product/{productId}:
  *   delete:
  *     tags:
  *       - Product
@@ -865,9 +1054,9 @@
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: productId
  *         required: true
- *         description: Product Mongo ObjectId
+ *         description: Product ID
  *         schema:
  *           type: string
  *     responses:
@@ -883,6 +1072,12 @@
  *                   example: Product deleted successfully
  *                 product:
  *                   $ref: '#/components/schemas/Product'
+ *       401:
+ *         description: Login required / invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Product not found
  *         content:
@@ -893,7 +1088,7 @@
 
 /**
  * @swagger
- * /api/product/{id}/status:
+ * /api/product/product-status/{productId}:
  *   put:
  *     tags:
  *       - Product
@@ -903,9 +1098,9 @@
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: productId
  *         required: true
- *         description: Product Mongo ObjectId
+ *         description: Product ID
  *         schema:
  *           type: string
  *     requestBody:
@@ -944,7 +1139,7 @@
 
 /**
  * @swagger
- * /api/product/available:
+ * /api/product/available-products:
  *   get:
  *     tags:
  *       - Product
@@ -971,7 +1166,7 @@
 
 /**
  * @swagger
- * /api/product/sold:
+ * /api/product/sold-products:
  *   get:
  *     tags:
  *       - Product
@@ -998,7 +1193,7 @@
 
 /**
  * @swagger
- * /api/product/total-sold:
+ * /api/product/total-sold-products:
  *   get:
  *     tags:
  *       - Product
@@ -1024,7 +1219,7 @@
 
 /**
  * @swagger
- * /api/product/total-available:
+ * /api/product/total-available-products:
  *   get:
  *     tags:
  *       - Product
