@@ -163,10 +163,11 @@ exports.loginValidator = (req, res, next) => {
 
 exports.createProductValidator = (req, res, next) => {
     const schema = joi.object({
-        productName: joi.string().pattern(/^[a-zA-Z]{2,}$/).required().messages({
-            'any.required': 'Product name is required',
-            'string.empty': 'Product name cannot be empty',
-            'string.pattern.base': 'Product name cannot contain digits or whitespace and must be at least 2 characters'
+        productName: joi.string().pattern(/^[a-zA-Z0-9]+(?: [a-zA-Z0-9]+)*$/).min(2).required().messages({
+        'any.required': 'Product name is required',
+        'string.empty': 'Product name cannot be empty',
+        'string.min': 'Product name must be at least 2 characters',
+        'string.pattern.base': 'Product name can only contain letters, digits, and single spaces between words'
         }),
         category: joi.string().required().messages({
             'any.required': 'Category is required',
