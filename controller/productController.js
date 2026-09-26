@@ -14,11 +14,10 @@ exports.createProduct = async (req, res, next) => {
       condition,
       price,
       description,
-      image,
       phoneNumber,
     } = req.body;
 
-    if (!productName || !category || !condition || !price || !description || !image || !phoneNumber) {
+    if (!productName || !category || !condition || !price || !description || !phoneNumber) {
       return res.status(400).json({
         message: 'Please fill in all required fields'
       });
