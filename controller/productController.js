@@ -55,11 +55,31 @@ exports.createProduct = async (req, res, next) => {
   }
 };
 
+exports.getProductById = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { productId } = req.params;
+    const product = await productModel.findOne({ where: { id: productId, userId: id } });
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found'
+      });
+    }
+
+    res.status(200).json({
+      message: 'Product retrieved successfully',
+      data: product
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.updateProduct = async (req, res, next) => {
   try {
     const { id } = req.user;
-    const productId = req.params.id;
+    const { productId } = req.params;
 
     const {
       productName,
@@ -80,18 +100,19 @@ exports.updateProduct = async (req, res, next) => {
       });
     }
 
-    if (!productName || !category || !condition || !price || !description || !image || !phoneNumber || !status) {
-      return res.status(400).json({
-        message: 'Please fill in all required fields'
-      });
-    }
-
+    // if (!productName || !category || !condition || !price || !description || !image || !phoneNumber || !status) {
+    //   return res.status(400).json({
+    //     message: 'Please fill in all required fields'
+    //   });
+    // }
+    if(image) {
     let uploadResult;
     if (req.files?.image) {
       const file = req.files.image;
       uploadResult = await cloudinary.uploader.upload(file.path);
       fs.unlinkSync(file.path);
     }
+    };
 
     const updatedProduct = await productModel.update({
       productName,

@@ -1,4 +1,5 @@
 const userModel = require('../models/user')
+const productModel = require('../models/product')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const redisClient = require('../config/redis')
@@ -98,6 +99,54 @@ exports.getUserProfile = async (req, res, next) => {
             message: 'User profile retrieved successfully',
             data: user
         });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+exports.userDashboard = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+
+        const user = await userModel.findByPk(id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const products = await productModel.findAll({ userId: id });
+        if (products.length === 0) {
+            return res.status(404).json({ message: 'No product belong to this user' });
+        }
+
+        const [totalListings, activeListings, soldItems] = await Promise.all([
+            productModel.count({ userId: id }),
+            productModel.count({ userId: id, status: 'available' }),
+            productModel.count({ userId: id, status: 'sold' }),
+        ]);
+
+        const getAllProducts = await productModel.findAll({where: { userId: id }});
+        const requiredProducts = getAllProducts.map(product => {
+            return {
+                id: product.id,
+                productName: product.productName,
+                category: product.category,
+                price: product.price,
+                image: product.image,
+                status: product.status
+            }
+        })
+        const dashboard = {
+            totalListings,
+            activeListings,
+            soldItems,
+        };
+
+        return res.status(200).json({
+            dashboard,
+            requiredProducts
+        });
+
     } catch (error) {
         next(error);
     }
