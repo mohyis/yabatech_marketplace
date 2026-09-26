@@ -197,10 +197,6 @@ exports.createProductValidator = (req, res, next) => {
             'string.empty': 'Phone number cannot be empty',
             'string.pattern.base': 'Phone number must be a valid number between 11 and 14 digits'
         }),
-        status: joi.string().valid('available', 'sold').required().messages({
-            'any.required': 'Status is required',
-            'string.empty': 'Status cannot be empty',
-        })
            
     })
 
