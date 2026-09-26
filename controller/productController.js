@@ -72,6 +72,14 @@ exports.updateProduct = async (req, res, next) => {
       status
     } = req.body;
 
+    const product = await productModel.findByPk(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found'
+      });
+    }
+
     if (!productName || !category || !condition || !price || !description || !image || !phoneNumber || !status) {
       return res.status(400).json({
         message: 'Please fill in all required fields'
@@ -85,7 +93,7 @@ exports.updateProduct = async (req, res, next) => {
       fs.unlinkSync(file.path);
     }
 
-    const [affected] = await productModel.update({
+    const updatedProduct = await productModel.update({
       productName,
       category,
       condition,
@@ -97,17 +105,9 @@ exports.updateProduct = async (req, res, next) => {
       status
     }, { where: { id: productId, userId: id } });
 
-    const product = await productModel.findByPk(productId);
-
-    if (!product) {
-      return res.status(404).json({
-        message: 'Product not found'
-      });
-    }
 
     res.status(200).json({
       message: 'Product updated successfully',
-      data: product
     });
   } catch (error) {
     fs.unlinkSync(req.files?.image?.path);
@@ -121,7 +121,6 @@ exports.updateProductStatus = async(req,res,next)=>{
         const {id} = req.user;
         const productId = req.params.id
 
-        const [affected] = await productModel.update({ status }, { where: { id: productId, userId: id } })
         const product = await productModel.findByPk(productId)
         if(!product){
             return res.status(404).json({   
@@ -129,9 +128,10 @@ exports.updateProductStatus = async(req,res,next)=>{
             })
         }
 
+        const updatedProduct = await productModel.update({ status }, { where: { id: productId, userId: id } })
+
         res.status(200).json({
             message: 'Product status updated successfully',
-            product
         })
     } catch (error) {
         next(error)
