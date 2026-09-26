@@ -80,6 +80,29 @@ exports.register = async (req, res, next) => {
     }
 }
 
+exports.getUserProfile = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const user = await userModel.findByPk(id, {
+            attributes: { exclude: ['password', 'otp', 'otpExpiresAt'] }
+        });
+
+        if (!user) {
+            return next({
+                message: 'user not found',
+                statusCode: 404
+            });
+        }
+
+        res.status(200).json({
+            message: 'User profile retrieved successfully',
+            data: user
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.updateUser = async(req,res,next)=>{
     try {
         const { id } = req.user;
