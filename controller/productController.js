@@ -16,10 +16,9 @@ exports.createProduct = async (req, res, next) => {
       description,
       image,
       phoneNumber,
-      status,
     } = req.body;
 
-    if (!productName || !category || !condition || !price || !description || !image || !phoneNumber || !status) {
+    if (!productName || !category || !condition || !price || !description || !image || !phoneNumber) {
       return res.status(400).json({
         message: 'Please fill in all required fields'
       });
@@ -41,8 +40,7 @@ exports.createProduct = async (req, res, next) => {
       description,
       image: uploadResult?.secure_url,         
       imagePublicId: uploadResult?.public_id,   
-      phoneNumber,
-      status
+      phoneNumber
     });
 
     res.status(201).json({
