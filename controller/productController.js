@@ -51,6 +51,76 @@ exports.createProduct = async (req, res, next) => {
   }
 };
 
+exports.getProductById = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { productId } = req.params;
+    const product = await productModel.findOne({ where: { id: productId, userId: id } });
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found'
+      });
+    }
+
+    res.status(200).json({
+      message: 'Product retrieved successfully',
+      data: product
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateProduct = async (req, res, next) => {
+  try {
+    const { id } = req.user;
+    const { productId } = req.params;
+
+    const {
+      productName,
+      category,
+      condition,
+      price,
+      description,
+      phoneNumber,
+      status
+    } = req.body;
+
+    const product = await productModel.findByPk(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found'
+      });
+    }
+
+    let uploadResult;
+    if (req.file) {
+      uploadResult = await cloudinary.uploader.upload(req.file.path);
+      fs.unlinkSync(req.file.path);
+    }
+
+    const updatedProduct = await productModel.update({
+      productName,
+      category,
+      condition,
+      price,
+      description,
+      image: uploadResult?.secure_url,
+      imagePublicId: uploadResult?.public_id,
+      phoneNumber,
+      status
+    }, { where: { id: productId, userId: id } });
+
+    res.status(200).json({
+      message: 'Product updated successfully'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.updateProductStatus = async(req,res,next)=>{
     try {
         const { status } = req.body
