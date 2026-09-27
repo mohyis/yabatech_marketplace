@@ -3,28 +3,21 @@ const fs = require('fs')
 const cloudinary = require('../config/cloudinary')
 
 exports.createProduct = async (req, res, next) => {
+  let fileDeleted = false;
+
   try {
     const { id } = req.user;
-
-    const {
-      productName,
-      category,
-      condition,
-      price,
-      description,
-      phoneNumber,
-    } = req.body;
+    const { productName, category, condition, price, description, phoneNumber } = req.body;
 
     if (!productName || !category || !condition || !price || !description || !phoneNumber) {
-      return res.status(400).json({
-        message: 'Please fill in all required fields'
-      });
+      return res.status(400).json({ message: 'Please fill in all required fields' });
     }
 
     let uploadResult;
     if (req.file) {
       uploadResult = await cloudinary.uploader.upload(req.file.path);
       fs.unlinkSync(req.file.path);
+      fileDeleted = true;
     }
 
     const product = await productModel.create({
@@ -39,12 +32,12 @@ exports.createProduct = async (req, res, next) => {
       phoneNumber
     });
 
-    res.status(201).json({
-      message: 'Product created successfully',
-      data: product
+    res.status(201).json({ 
+        message: 'Product created successfully', 
+        data: product 
     });
   } catch (error) {
-    if (req.file?.path) {
+    if (req.file?.path && !fileDeleted && fs.existsSync(req.file.path)) {
       fs.unlinkSync(req.file.path);
     }
     next(error);
