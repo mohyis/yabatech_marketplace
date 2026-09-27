@@ -845,10 +845,6 @@
  *               phoneNumber:
  *                 type: string
  *                 example: "+2348029837465"
- *               status:
- *                 type: string
- *                 enum: [available, sold]
- *                 example: available
  *     responses:
  *       201:
  *         description: Product created successfully
