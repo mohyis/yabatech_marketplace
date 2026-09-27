@@ -15,6 +15,7 @@ cb(null, path.join(process.cwd(), "assets"));    },
 });
 
 const fileFilter = (req, file, cb)=>{
+  console.log('mimetype:', file.mimetype, 'originalname:', file.originalname);
 
     if(file.mimetype.startsWith('image/')){
         cb(null, true)
