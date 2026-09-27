@@ -21,7 +21,7 @@ exports.registerValidator = (req, res, next) => {
                 'any.required': 'Matric number is required',
                 'string.empty': 'Matric number cannot be empty',
                 'string.pattern.base':
-                    'Matric number must be in the format ND/CSC/25/32109872'
+                    'Matric number must be in the format ND/CSC/25/3210987'
             }),
 
         department: joi.string().pattern(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/).required().messages({

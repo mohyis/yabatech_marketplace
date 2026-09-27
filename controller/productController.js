@@ -1,5 +1,4 @@
 const productModel = require('../models/product');
-const userModel = require('../models/user')
 const fs = require('fs')
 const cloudinary = require('../config/cloudinary')
 
@@ -23,10 +22,9 @@ exports.createProduct = async (req, res, next) => {
     }
 
     let uploadResult;
-    if (req.files?.image) {                     
-      const file = req.files.image;
-      uploadResult = await cloudinary.uploader.upload(file.path);
-      fs.unlinkSync(file.path);
+    if (req.file) {
+      uploadResult = await cloudinary.uploader.upload(req.file.path);
+      fs.unlinkSync(req.file.path);
     }
 
     const product = await productModel.create({
@@ -46,69 +44,9 @@ exports.createProduct = async (req, res, next) => {
       data: product
     });
   } catch (error) {
-    if (req.files?.image?.path) {               
-      fs.unlinkSync(req.files.image.path);
+    if (req.file?.path) {
+      fs.unlinkSync(req.file.path);
     }
-    next(error);
-  }
-};
-
-exports.updateProduct = async (req, res, next) => {
-  try {
-    const { id } = req.user;
-    const { productId } = req.params;
-
-    const {
-      productName,
-      category,
-      condition,
-      price,
-      description,
-      image,
-      phoneNumber,
-      status
-    } = req.body;
-
-    const product = await productModel.findByPk(productId);
-
-    if (!product) {
-      return res.status(404).json({
-        message: 'Product not found'
-      });
-    }
-
-    // if (!productName || !category || !condition || !price || !description || !image || !phoneNumber || !status) {
-    //   return res.status(400).json({
-    //     message: 'Please fill in all required fields'
-    //   });
-    // }
-    if(image) {
-    let uploadResult;
-    if (req.files?.image) {
-      const file = req.files.image;
-      uploadResult = await cloudinary.uploader.upload(file.path);
-      fs.unlinkSync(file.path);
-    }
-    };
-
-    const updatedProduct = await productModel.update({
-      productName,
-      category,
-      condition,
-      price,
-      description,
-      image: uploadResult?.secure_url,         
-      imagePublicId: uploadResult?.public_id,   
-      phoneNumber,
-      status
-    }, { where: { id: productId, userId: id } });
-
-
-    res.status(200).json({
-      message: 'Product updated successfully',
-    });
-  } catch (error) {
-    fs.unlinkSync(req.files?.image?.path);
     next(error);
   }
 };
