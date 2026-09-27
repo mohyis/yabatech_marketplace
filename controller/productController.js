@@ -3,7 +3,6 @@ const userModel = require('../models/user')
 const fs = require('fs')
 const cloudinary = require('../config/cloudinary')
 
-// endpoint to create schedule for delivery or pickup by customers and admin.
 exports.createProduct = async (req, res, next) => {
   try {
     const { id } = req.user;
@@ -24,7 +23,7 @@ exports.createProduct = async (req, res, next) => {
     }
 
     let uploadResult;
-    if (req.files?.image) {
+    if (req.files?.image) {                     
       const file = req.files.image;
       uploadResult = await cloudinary.uploader.upload(file.path);
       fs.unlinkSync(file.path);
@@ -37,8 +36,8 @@ exports.createProduct = async (req, res, next) => {
       condition,
       price,
       description,
-      image: uploadResult?.secure_url,         
-      imagePublicId: uploadResult?.public_id,   
+      image: uploadResult?.secure_url,
+      imagePublicId: uploadResult?.public_id,
       phoneNumber
     });
 
@@ -47,28 +46,9 @@ exports.createProduct = async (req, res, next) => {
       data: product
     });
   } catch (error) {
-    fs.unlinkSync(req.files?.image?.path);
-    next(error);
-  }
-};
-
-exports.getProductById = async (req, res, next) => {
-  try {
-    const { id } = req.user;
-    const { productId } = req.params;
-    const product = await productModel.findOne({ where: { id: productId, userId: id } });
-
-    if (!product) {
-      return res.status(404).json({
-        message: 'Product not found'
-      });
+    if (req.files?.image?.path) {               
+      fs.unlinkSync(req.files.image.path);
     }
-
-    res.status(200).json({
-      message: 'Product retrieved successfully',
-      data: product
-    });
-  } catch (error) {
     next(error);
   }
 };
