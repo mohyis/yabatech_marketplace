@@ -114,15 +114,15 @@ exports.userDashboard = async (req, res, next) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const products = await productModel.findAll({ userId: id });
+        const products = await productModel.findAll({ where: { userId: id } });
         if (products.length === 0) {
             return res.status(404).json({ message: 'No product belong to this user' });
         }
 
         const [totalListings, activeListings, soldItems] = await Promise.all([
-            productModel.count({ userId: id }),
-            productModel.count({ userId: id, status: 'available' }),
-            productModel.count({ userId: id, status: 'sold' }),
+            productModel.count({ where: { userId: id } }),
+            productModel.count({ where: { userId: id, status: 'available' } }),
+            productModel.count({ where: { userId: id, status: 'sold' } }),
         ]);
 
         const getAllProducts = await productModel.findAll({where: { userId: id }});
