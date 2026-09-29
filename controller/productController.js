@@ -65,7 +65,6 @@ exports.getProductById = async (req, res, next) => {
     next(error);
   }
 };
-
 exports.updateProduct = async (req, res, next) => {
   try {
     const { id } = req.user;
@@ -81,7 +80,7 @@ exports.updateProduct = async (req, res, next) => {
       status
     } = req.body;
 
-    const product = await productModel.findByPk(productId);
+    const product = await productModel.findOne({ where: { id: productId, userId: id } });
 
     if (!product) {
       return res.status(404).json({
@@ -93,9 +92,14 @@ exports.updateProduct = async (req, res, next) => {
     if (req.file) {
       uploadResult = await cloudinary.uploader.upload(req.file.path);
       fs.unlinkSync(req.file.path);
+
+      // clean up the old image now that the new one is confirmed uploaded
+      if (product.imagePublicId) {
+        await cloudinary.uploader.destroy(product.imagePublicId);
+      }
     }
 
-    const updatedProduct = await productModel.update({
+    await productModel.update({
       productName,
       category,
       condition,
@@ -111,6 +115,9 @@ exports.updateProduct = async (req, res, next) => {
       message: 'Product updated successfully'
     });
   } catch (error) {
+    if (req.file?.path && fs.existsSync(req.file.path)) {
+      fs.unlinkSync(req.file.path);
+    }
     next(error);
   }
 };

@@ -11,7 +11,7 @@ router.post('/create-product', checkUser, createProductValidator, upload.single(
 router.get('/market-place', getMarketPlaceProducts);
 router.get('/product/:productId', checkUser, getProductById);
 router.get('/market-place/:productId', getProductMarketPlaceById);
-router.put('/product/:productId', checkUser, updateProduct);
+router.put('/product/:productId', checkUser, upload.single('image'), updateProduct);
 router.put('/product-status/:productId', checkUser, updateProductStatusValidator, updateProductStatus);
 router.get('/all-products', checkUser, getAllProducts);
 router.get('/available-products', checkUser, productRateLimiter, getAvailableProducts);
