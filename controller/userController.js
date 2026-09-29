@@ -104,7 +104,6 @@ exports.getUserProfile = async (req, res, next) => {
     }
 };
 
-
 exports.userDashboard = async (req, res, next) => {
     try {
         const { id } = req.user;
@@ -125,8 +124,7 @@ exports.userDashboard = async (req, res, next) => {
             productModel.count({ where: { userId: id, status: 'sold' } }),
         ]);
 
-        const getAllProducts = await productModel.findAll({where: { userId: id }});
-        const requiredProducts = getAllProducts.map(product => {
+        const requiredProducts = products.map(product => {
             return {
                 id: product.id,
                 productName: product.productName,
@@ -134,8 +132,9 @@ exports.userDashboard = async (req, res, next) => {
                 price: product.price,
                 image: product.image,
                 status: product.status
-            }
-        })
+            };
+        });
+
         const dashboard = {
             totalListings,
             activeListings,
