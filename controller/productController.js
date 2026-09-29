@@ -119,7 +119,7 @@ exports.updateProductStatus = async(req,res,next)=>{
     try {
         const { status } = req.body
         const {id} = req.user;
-        const productId = req.params
+        const {productId} = req.params
 
         const product = await productModel.findByPk(productId)
         if(!product){
