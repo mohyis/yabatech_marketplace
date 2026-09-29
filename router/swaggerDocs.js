@@ -870,6 +870,119 @@
  *                   example: Please fill in all required fields
  */
 
+/**
+ * @swagger
+ * /api/product/market-place:
+ *   get:
+ *     tags:
+ *       - Product
+ *     summary: Get all available marketplace products
+ *     description: Retrieves all products with status 'available' across the marketplace, including the owner's basic profile info. No authentication required.
+ *     responses:
+ *       200:
+ *         description: All market place products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: All market place products retrieved successfully
+ *                 requiredProducts:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         example: 7876745637829837465789d9
+ *                       productName:
+ *                         type: string
+ *                         example: Samsung Galaxy S23
+ *                       category:
+ *                         type: string
+ *                         example: Phones
+ *                       condition:
+ *                         type: string
+ *                         example: used
+ *                       price:
+ *                         type: number
+ *                         example: 250000
+ *                       description:
+ *                         type: string
+ *                         example: Slightly used Samsung Galaxy S23
+ *                       image:
+ *                         type: string
+ *                         example: https://res.cloudinary.com/example/image.jpg
+ *                       phoneNumber:
+ *                         type: string
+ *                         example: "+2348029837465"
+ *                       status:
+ *                         type: string
+ *                         example: available
+ *                       user:
+ *                         type: object
+ *                         nullable: true
+ *                         properties:
+ *                           fullName:
+ *                             type: string
+ *                             example: John Doe
+ *                           department:
+ *                             type: string
+ *                             example: Computer Engineering
+ *                           phoneNumber:
+ *                             type: string
+ *                             example: "+2348029837465"
+ *       401:
+ *         description: Login required / invalid token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+
+/**
+ * @swagger
+ * /api/product/market-place/{productId}:
+ *   get:
+ *     tags:
+ *       - Product
+ *     summary: Get a single marketplace product by ID
+ *     description: Retrieves one public marketplace product by its ID, including the owner's basic profile info. No authentication required.
+ *     parameters:
+ *       - name: productId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         example: 7876745637829837465789d9
+ *     responses:
+ *       200:
+ *         description: Product retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Product retrieved successfully
+ *                 data:
+ *                   $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: Product not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Product not found
+ */
+
 
 /**
  * @swagger

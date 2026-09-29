@@ -1,4 +1,5 @@
 const productModel = require('../models/product');
+const userModel = require('../models/user');
 const fs = require('fs')
 const cloudinary = require('../config/cloudinary')
 
@@ -162,6 +163,71 @@ exports.getAllProducts = async(req,res,next)=>{
 
     } catch (error) {
         next(error)
+    }
+};
+
+exports.getProductMarketPlaceById = async (req, res, next) => {
+  try {
+    const { productId } = req.params;
+    const product = await productModel.findOne({ where: { id: productId }, include: [{
+      model: userModel,
+      as: 'user',
+      attributes: ['firstName', 'lastName', 'department', 'phoneNumber']
+    }] });
+
+    if (!product) {
+      return res.status(404).json({
+        message: 'Product not found'
+      });
+    }
+
+    res.status(200).json({
+      message: 'Product retrieved successfully',
+      data: product
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+exports.getMarketPlaceProducts = async (req, res, next) => {
+    try {
+        const products = await productModel.findAll({
+            where: { status: 'available' },
+            include: [{
+                model: userModel,
+                as: 'user',
+                attributes: ['firstName', 'lastName', 'department', 'phoneNumber']
+            }]
+        });
+
+        const requiredProducts = products.map(product => {
+            return {
+                id: product.id,
+                productName: product.productName,
+                category: product.category,
+                condition: product.condition,
+                price: product.price,
+                description: product.description,
+                image: product.image,
+                phoneNumber: product.phoneNumber,
+                status: product.status,
+                user: product.user ? {
+                    fullName: `${product.user.firstName} ${product.user.lastName}`,
+                    department: product.user.department,
+                    phoneNumber: product.user.phoneNumber
+                } : null
+            };
+        });
+
+        res.status(200).json({
+            message: 'All market place products retrieved successfully',
+            requiredProducts
+        });
+
+    } catch (error) {
+        next(error);
     }
 };
 

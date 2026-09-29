@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { createProduct, updateProduct, updateProductStatus, getProductById, getAllProducts, getAvailableProducts, getSoldProducts, getTotalAvailableProducts, getTotalSoldProducts, deleteProduct } = require('../controller/productController');
+const { createProduct, updateProduct, getMarketPlaceProducts,updateProductStatus,getProductMarketPlaceById, getProductById, getAllProducts, getAvailableProducts, getSoldProducts, getTotalAvailableProducts, getTotalSoldProducts, deleteProduct } = require('../controller/productController');
 const { createProductValidator, updateProductStatusValidator } = require('../middleware/joiValidation');
 const { productRateLimiter } = require('../middleware/rateLimiter');
 const  upload  = require('../middleware/multer')
@@ -8,7 +8,9 @@ const  upload  = require('../middleware/multer')
 const { checkUser } = require('../middleware/validation');
 
 router.post('/create-product', checkUser, createProductValidator, upload.single('image'), createProduct);
+router.get('/market-place', getMarketPlaceProducts);
 router.get('/product/:productId', checkUser, getProductById);
+router.get('/market-place/:productId', getProductMarketPlaceById);
 router.put('/product/:productId', checkUser, updateProduct);
 router.put('/product-status/:productId', checkUser, updateProductStatusValidator, updateProductStatus);
 router.get('/all-products', checkUser, getAllProducts);
